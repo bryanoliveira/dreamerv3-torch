@@ -4,6 +4,7 @@ import os
 import pathlib
 import sys
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 os.environ["MUJOCO_GL"] = "osmesa"
 
 import numpy as np
@@ -20,6 +21,8 @@ from parallel import Parallel, Damy
 import torch
 from torch import nn
 from torch import distributions as torchd
+
+import wandb
 
 
 to_np = lambda x: x.detach().cpu().numpy()
@@ -222,6 +225,16 @@ def main(config):
     step = count_steps(config.traindir)
     # step in logger is environmental step
     logger = tools.Logger(logdir, config.action_repeat * step)
+
+    wandb.init(
+        project='dreamerv3',
+        name=config.logdir.split('/')[-1].split('-')[0] + '-' + str(config.seed),
+        group=config.logdir.split('/')[-1].split('-')[-1],
+        sync_tensorboard=True,
+        config=dict(vars(config)),
+    )
+    with open(logdir / "config.yaml", "w") as f:
+        yaml.dump(dict(vars(config)), f)
 
     print("Create envs.")
     if config.offline_traindir:
