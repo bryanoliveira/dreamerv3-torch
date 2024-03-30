@@ -132,16 +132,12 @@ sldp_image:
   encoder: {mlp_keys: '$^', cnn_keys: 'image'}
   decoder: {mlp_keys: '$^', cnn_keys: 'image'}
 
-  # envs: 32
-  # batch_size: 96
-  # batch_length: 64
-  # train_ratio: 3072
   envs: 16
-  batch_size: 16
+  batch_size: 48
   batch_length: 64
-  train_ratio: 1024
+  train_ratio: 3072
 
-  steps: 5e5
+  steps: 1e6
   parallel: True
   action_repeat: 1
   video_pred_log: true
