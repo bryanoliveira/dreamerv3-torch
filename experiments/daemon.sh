@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p 1.to_run 2.queued 3.running 4.executed
+
 
 while true; do
   # Check if there are any scripts in the "./to_run" folder
