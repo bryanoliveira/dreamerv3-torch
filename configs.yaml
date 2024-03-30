@@ -93,6 +93,63 @@ defaults:
   disag_units: 400
   disag_action_cond: False
 
+sldp:
+  task: sldp_onehot
+  env__w: 3
+  env__sparse_rewards: False
+  env__win_reward: 10
+  env__move_reward: -0.1
+  env__invalid_move_reward: -1
+  encoder: {mlp_keys: '.*', cnn_keys: '$^'}
+  decoder: {mlp_keys: '.*', cnn_keys: '$^'}
+
+  # envs: 48
+  # batch_size: 96
+  # batch_length: 64
+  # train_ratio: 6144 (1:1)
+  envs: 16
+  batch_size: 16
+  batch_length: 64
+  train_ratio: 1024
+
+  steps: 1e5 # 500000
+  parallel: True
+  action_repeat: 1
+  video_pred_log: false
+  eval_episode_num: 16
+  log_every: 1e3
+  actor: {dist: 'onehot', std: 'none'}
+  imag_gradient: 'reinforce'
+
+sldp_image:
+  task: sldp_image
+  env__image_folder: '/mnt/data/Documents/sliding-puzzle/imgs/single'
+  env__w: 3
+  env__sparse_rewards: False
+  env__win_reward: 10
+  env__move_reward: -0.1
+  env__invalid_move_reward: -1
+  encoder: {mlp_keys: '$^', cnn_keys: 'image'}
+  decoder: {mlp_keys: '$^', cnn_keys: 'image'}
+
+  # envs: 32
+  # batch_size: 96
+  # batch_length: 64
+  # train_ratio: 3072
+  envs: 16
+  batch_size: 16
+  batch_length: 64
+  train_ratio: 1024
+
+  steps: 5e5
+  parallel: True
+  action_repeat: 1
+  video_pred_log: true
+  eval_episode_num: 16
+  log_every: 1e3
+  actor: {dist: 'onehot', std: 'none'}
+  imag_gradient: 'reinforce'
+
 dmc_proprio:
   steps: 5e5
   action_repeat: 2

@@ -148,7 +148,19 @@ def make_dataset(episodes, config):
 
 def make_env(config, mode, id):
     suite, task = config.task.split("_", 1)
-    if suite == "dmc":
+    if suite == "sldp":
+        import envs.sldp as sldp
+
+        env = sldp.SlidingPuzzles(
+            task,
+            **{
+                k.replace("env__", ""): v
+                for k, v in vars(config).items()
+                if k.startswith("env__")
+            },
+        )
+        env = wrappers.OneHotAction(env)
+    elif suite == "dmc":
         import envs.dmc as dmc
 
         env = dmc.DeepMindControl(

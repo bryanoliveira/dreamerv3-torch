@@ -209,9 +209,26 @@ def simulate(
                 # record logs given from environments
                 for key in list(cache[envs[i].id].keys()):
                     if "log_" in key:
-                        logger.scalar(
-                            key, float(np.array(cache[envs[i].id][key]).sum())
-                        )
+                        if key.endswith("_mean"):
+                            logger.scalar(
+                                key, float(np.array(cache[envs[i].id][key]).mean())
+                            )
+                        elif key.endswith("_std"):
+                            logger.scalar(
+                                key, float(np.array(cache[envs[i].id][key]).std())
+                            )
+                        elif key.endswith("_max"):
+                            logger.scalar(
+                                key, float(np.array(cache[envs[i].id][key]).max())
+                            )
+                        elif key.endswith("_min"):
+                            logger.scalar(
+                                key, float(np.array(cache[envs[i].id][key]).min())
+                            )
+                        else:
+                            logger.scalar(
+                                key, float(np.array(cache[envs[i].id][key]).sum())
+                            )
                         # log items won't be used later
                         cache[envs[i].id].pop(key)
 
