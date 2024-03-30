@@ -13,13 +13,13 @@ while true; do
     mv "experiments/1.to_run/$script" "experiments/2.queued/$script"
     echo "---- Queued $script"
 
-    # Check if there is at least 30% of RAM available
-    ram_usage=$(free | awk '/Mem/{printf("%.2f"), $3/$2*100}')
-    # Check if there is at least 30% of VRAM available
+    # Check if there is at least 50% of RAM available
+    ram_usage=$(free | awk '/Mem/{printf("%.2f"), $3/$2*100}' | sed 's/,/\./')
+    # Check if there is at least 50% of VRAM available
     vram_usage=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | head -n 1)
 
     while true; do
-      if (( $(echo "$ram_usage < 70" | bc -l) )) && (( $(echo "$vram_usage < 20000" | bc -l) )); then
+      if (( $(echo "$ram_usage < 50" | bc -l) )) && (( $(echo "$vram_usage < 12000" | bc -l) )); then
         # If there is enough RAM available, break the loop and continue with the execution
         echo "---- Running $script"
         break
@@ -29,7 +29,7 @@ while true; do
         date
         sleep 180
 
-        ram_usage=$(free | awk '/Mem/{printf("%.2f"), $3/$2*100}')
+        ram_usage=$(free | awk '/Mem/{printf("%.2f"), $3/$2*100}' | sed 's/,/\./')
         vram_usage=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | head -n 1)
       fi
     done
