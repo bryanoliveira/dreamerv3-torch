@@ -23,6 +23,7 @@ from torch import nn
 from torch import distributions as torchd
 
 import wandb
+from tqdm import tqdm
 
 
 to_np = lambda x: x.detach().cpu().numpy()
@@ -324,10 +325,12 @@ def main(config):
         agent._should_pretrain._once = False
 
     # make sure eval will be executed once after config.steps
+    pbar = tqdm(total=config.steps + config.eval_every, desc="Train Loop")
+    last_pbar_val = 0
     while agent._step < config.steps + config.eval_every:
         logger.write()
         if config.eval_episode_num > 0:
-            print("Start evaluation.")
+            print(f"Start evaluation. ({config.steps}/{config.steps + config.eval_every} steps)")
             eval_policy = functools.partial(agent, training=False)
             tools.simulate(
                 eval_policy,
@@ -341,7 +344,7 @@ def main(config):
             if config.video_pred_log:
                 video_pred = agent._wm.video_pred(next(eval_dataset))
                 logger.video("eval_openl", to_np(video_pred))
-        print("Start training.")
+        print(f"Start training ({config.steps}/{config.steps + config.eval_every} steps).")
         state = tools.simulate(
             agent,
             train_envs,
@@ -357,6 +360,10 @@ def main(config):
             "optims_state_dict": tools.recursively_collect_optim_state_dict(agent),
         }
         torch.save(items_to_save, logdir / "latest.pt")
+
+        pbar.update(agent._step - last_pbar_val)
+        last_pbar_val = agent._step
+
     for env in train_envs + eval_envs:
         try:
             env.close()
