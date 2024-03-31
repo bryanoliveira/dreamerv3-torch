@@ -123,7 +123,7 @@ sldp:
 
 sldp_image:
   task: sldp_image
-  env__image_folder: '/mnt/data/Documents/sliding-puzzle/imgs/single'
+  env__image_folder: 'single'
   env__w: 3
   env__sparse_rewards: False
   env__win_reward: 10
@@ -145,6 +145,70 @@ sldp_image:
   log_every: 1e3
   actor: {dist: 'onehot', std: 'none'}
   imag_gradient: 'reinforce'
+
+sldp_large:
+  task: sldp_onehot
+  env__image_folder: single
+  env__w: 3
+  env__sparse_rewards: False
+  env__win_reward: 10
+  env__move_reward: -0.1
+  env__invalid_move_reward: -1
+
+  envs: 16
+  batch_size: 48
+  batch_length: 64
+  train_ratio: 3072  # (1:1)
+
+  steps: 1e5 # 100.000
+  parallel: True
+  action_repeat: 1
+  video_pred_log: False
+  eval_episode_num: 16
+  log_every: 1e4
+  imag_gradient: 'reinforce'
+
+  dyn_hidden: 1024
+  dyn_deter: 2048
+  units: 768
+  encoder: {mlp_keys: '.*', cnn_keys: '$^', cnn_depth: 64, mlp_layers: 4, mlp_units: 768}
+  decoder: {mlp_keys: '.*', cnn_keys: '$^', cnn_depth: 64, mlp_layers: 4, mlp_units: 768}
+  actor: {layers: 4, dist: 'onehot', std: 'none'}
+  value: {layers: 4}
+  reward_head: {layers: 4}
+  cont_head: {layers: 4}
+
+sldp_large_image:
+  task: sldp_image
+  env__image_folder: single
+  env__w: 3
+  env__sparse_rewards: False
+  env__win_reward: 10
+  env__move_reward: -0.1
+  env__invalid_move_reward: -1
+
+  envs: 16
+  batch_size: 48
+  batch_length: 64
+  train_ratio: 3072  # (1:1)
+
+  steps: 1e5 # 100.000
+  parallel: True
+  action_repeat: 1
+  video_pred_log: True
+  eval_episode_num: 16
+  log_every: 1e4
+  imag_gradient: 'reinforce'
+
+  dyn_hidden: 1024
+  dyn_deter: 2048
+  units: 768
+  encoder: {mlp_keys: '$^', cnn_keys: 'image', cnn_depth: 64, mlp_layers: 4, mlp_units: 768}
+  decoder: {mlp_keys: '$^', cnn_keys: 'image', cnn_depth: 64, mlp_layers: 4, mlp_units: 768}
+  actor: {layers: 4, dist: 'onehot', std: 'none'}
+  value: {layers: 4}
+  reward_head: {layers: 4}
+  cont_head: {layers: 4}
 
 dmc_proprio:
   steps: 5e5
