@@ -4,7 +4,7 @@ import os
 import pathlib
 import sys
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
 os.environ["MUJOCO_GL"] = "osmesa"
 
 import numpy as np
@@ -154,6 +154,7 @@ def make_env(config, mode, id):
 
         env = sldp.SlidingPuzzles(
             task,
+            seed=config.seed + id,
             **{
                 k.replace("env__", ""): v
                 for k, v in vars(config).items()
@@ -240,9 +241,9 @@ def main(config):
     logger = tools.Logger(logdir, config.action_repeat * step)
 
     wandb.init(
-        project='dreamerv3',
-        name=config.logdir.split('/')[-1].split('-')[0] + '-' + str(config.seed),
-        group=config.logdir.split('/')[-1].split('-')[-1],
+        project="dreamerv3",
+        name=config.logdir.split("/")[-1].split("-")[0] + "-" + str(config.seed),
+        group=config.logdir.split("/")[-1].split("-")[-1],
         sync_tensorboard=True,
         config=dict(vars(config)),
     )
@@ -329,8 +330,11 @@ def main(config):
     last_pbar_val = 0
     while agent._step < config.steps + config.eval_every:
         logger.write()
+        print("-- Running experiment", config.logdir.split("/")[-1])
         if config.eval_episode_num > 0:
-            print(f"Start evaluation. ({config.steps}/{config.steps + config.eval_every} steps)")
+            print(
+                f"Start evaluation. ({100 * agent._step / (config.steps + config.eval_every):.2f}% - {agent._step}/{config.steps + config.eval_every} steps)"
+            )
             eval_policy = functools.partial(agent, training=False)
             tools.simulate(
                 eval_policy,
@@ -344,7 +348,9 @@ def main(config):
             if config.video_pred_log:
                 video_pred = agent._wm.video_pred(next(eval_dataset))
                 logger.video("eval_openl", to_np(video_pred))
-        print(f"Start training ({config.steps}/{config.steps + config.eval_every} steps).")
+        print(
+            f"Start training ({100 * agent._step / (config.steps + config.eval_every):.2f}% - {agent._step}/{config.steps + config.eval_every} steps)."
+        )
         state = tools.simulate(
             agent,
             train_envs,
