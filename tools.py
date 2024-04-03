@@ -149,7 +149,7 @@ def simulate(
         reward = [0] * len(envs)
     else:
         step, episode, done, length, obs, agent_state, reward = state
-    
+
     # tqdm
     pbar = tqdm(total=steps if steps else episodes, desc="Simulating")
     last_pbar_val = step if steps else episode
@@ -213,23 +213,12 @@ def simulate(
                 score = float(np.array(cache[envs[i].id]["reward"]).sum())
                 video = cache[envs[i].id]["image"]
                 # record logs given from environments
+                metrics_accumulator = collections.defaultdict(list)
                 for key in list(cache[envs[i].id].keys()):
                     if "log_" in key:
-                        if key.endswith("_mean"):
-                            logger.scalar(
-                                key, float(np.array(cache[envs[i].id][key]).mean())
-                            )
-                        elif key.endswith("_std"):
-                            logger.scalar(
-                                key, float(np.array(cache[envs[i].id][key]).std())
-                            )
-                        elif key.endswith("_max"):
-                            logger.scalar(
-                                key, float(np.array(cache[envs[i].id][key]).max())
-                            )
-                        elif key.endswith("_min"):
-                            logger.scalar(
-                                key, float(np.array(cache[envs[i].id][key]).min())
+                        if key.endswith("_mean") or key.endswith("_std") or key.endswith("_max") or key.endswith("_min"):
+                            metrics_accumulator[key].append(
+                                float(np.array(cache[envs[i].id][key]).sum())
                             )
                         else:
                             logger.scalar(
@@ -237,6 +226,16 @@ def simulate(
                             )
                         # log items won't be used later
                         cache[envs[i].id].pop(key)
+
+                for key, metrics in metrics_accumulator.items():
+                    if key.endswith("_mean"):
+                        logger.scalar(key, float(np.array(metrics).mean()))
+                    elif key.endswith("_std"):
+                        logger.scalar(key, float(np.array(metrics).std()))
+                    elif key.endswith("_max"):
+                        logger.scalar(key, float(np.array(metrics).max()))
+                    elif key.endswith("_min"):
+                        logger.scalar(key, float(np.array(metrics).min()))
 
                 if not is_eval:
                     step_in_dataset = erase_over_episodes(cache, limit)
@@ -652,8 +651,7 @@ class UnnormalizedHuber(torchd.normal.Normal):
 
     def log_prob(self, event):
         return -(
-            torch.sqrt((event - self.mean) ** 2 + self._threshold**2)
-            - self._threshold
+            torch.sqrt((event - self.mean) ** 2 + self._threshold**2) - self._threshold
         )
 
     def mode(self):
