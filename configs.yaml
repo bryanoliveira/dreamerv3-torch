@@ -110,7 +110,7 @@ sldp:
   envs: 16
   batch_size: 16
   batch_length: 64
-  train_ratio: 1024
+  train_ratio: 512 # 1:2
 
   steps: 1e5 # 500000
   parallel: True
@@ -133,9 +133,9 @@ sldp_image:
   decoder: {mlp_keys: '$^', cnn_keys: 'image'}
 
   envs: 16
-  batch_size: 48
+  batch_size: 16
   batch_length: 64
-  train_ratio: 3072
+  train_ratio: 512 # 1:2
 
   steps: 1e6
   parallel: True
@@ -156,9 +156,9 @@ sldp_large:
   env__invalid_move_reward: -1
 
   envs: 16
-  batch_size: 48
+  batch_size: 16
   batch_length: 64
-  train_ratio: 3072  # (1:1)
+  train_ratio: 512  # (1:1)
 
   steps: 1e5 # 100.000
   parallel: True
@@ -188,9 +188,9 @@ sldp_large_image:
   env__invalid_move_reward: -1
 
   envs: 16
-  batch_size: 48
+  batch_size: 16
   batch_length: 64
-  train_ratio: 3072  # (1:1)
+  train_ratio: 512  # (1:2)
 
   steps: 1e5 # 100.000
   parallel: True
