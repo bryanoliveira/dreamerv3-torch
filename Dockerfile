@@ -5,7 +5,7 @@
 # and changing the command to `sh -c 'ldconfig -v && nvidia-smi'`.
 #
 # 2. Start training:
-# docker build --build-arg GIT_COMMIT=$(git rev-parse HEAD) -f Dockerfile -t bryan-dreamerv3:latest .
+# docker build --build-arg GIT_COMMIT=$(git rev-parse HEAD) --build-arg WANDB_KEY=hash -f Dockerfile -t bryan-dreamerv3:latest .
 # docker run -it --rm --gpus all -v $PWD:/workspace -u $(id -u):$(id -g) img \
 #   sh xvfb_run.sh python3 dreamer.py \
 #   --configs dmc_vision --task dmc_walker_walk \
@@ -45,7 +45,8 @@ RUN pip3 install -r requirements.txt
 
 ARG GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
-ENV WANDB_API_KEY=599a6016bab9e23813a2be6f46e4b0cb86595d45
+ARG WANDB_KEY
+ENV WANDB_API_KEY=$WANDB_KEY
 RUN mkdir /dreamer
 COPY . /dreamer
 RUN chown -R 1000:root /dreamer && chmod -R 775 /dreamer
