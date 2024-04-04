@@ -51,5 +51,5 @@ COPY . /dreamer
 RUN chown -R 1000:root /dreamer && chmod -R 775 /dreamer
 WORKDIR /dreamer
 
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+RUN chmod +x /dreamer/entrypoint.sh
+ENTRYPOINT ["/dreamer/entrypoint.sh"]
