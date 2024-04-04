@@ -161,7 +161,7 @@ sldp_large:
   action_repeat: 1
   video_pred_log: False
   eval_episode_num: 16
-  log_every: 1e4
+  log_every: 1e3
   imag_gradient: 'reinforce'
 
   dyn_hidden: 1024
@@ -193,7 +193,7 @@ sldp_large_image:
   action_repeat: 1
   video_pred_log: True
   eval_episode_num: 16
-  log_every: 1e4
+  log_every: 1e3
   imag_gradient: 'reinforce'
 
   dyn_hidden: 1024
