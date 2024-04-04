@@ -43,10 +43,6 @@ RUN pip3 install -r requirements.txt
 # RUN python3 -m atari_py.import_roms ROMS
 # RUN cd .. && rm -rf roms
 
-RUN mkdir /sldp
-COPY ../sliding-puzzle-env /sldp
-RUN pip3 install -e /sldp
-
 ARG GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
 ENV WANDB_API_KEY=599a6016bab9e23813a2be6f46e4b0cb86595d45
@@ -54,3 +50,6 @@ RUN mkdir /dreamer
 COPY . /dreamer
 RUN chown -R 1000:root /dreamer && chmod -R 775 /dreamer
 WORKDIR /dreamer
+
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
