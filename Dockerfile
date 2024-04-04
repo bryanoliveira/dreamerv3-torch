@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y \
     libglew2.1 libgl1-mesa-glx libosmesa6 \
     wget unrar cmake g++ libgl1-mesa-dev \
     libx11-6 openjdk-8-jdk x11-xserver-utils xvfb \
+    bc \
     && apt-get clean
 RUN pip3 install --upgrade pip
 
