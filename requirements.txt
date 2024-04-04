@@ -11,8 +11,8 @@ pandas==1.2.4
 protobuf==3.20.0
 scipy==1.8.0
 tensorboard
-torch==2.0.0
-torchvision==0.15.1
+torch==2.0.1
+torchvision #==0.15.1
 wandb
 
 # atari-py==0.2.9
