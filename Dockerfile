@@ -5,7 +5,7 @@
 # and changing the command to `sh -c 'ldconfig -v && nvidia-smi'`.
 #
 # 2. Start training:
-# docker build -f  Dockerfile -t img . && \
+# docker build --build-arg GIT_COMMIT=$(git rev-parse HEAD) -f Dockerfile -t bryan-dreamerv3:latest .
 # docker run -it --rm --gpus all -v $PWD:/workspace -u $(id -u):$(id -g) img \
 #   sh xvfb_run.sh python3 dreamer.py \
 #   --configs dmc_vision --task dmc_walker_walk \
@@ -42,6 +42,10 @@ RUN pip3 install -r requirements.txt
 # RUN unrar x -o+ Roms.rar
 # RUN python3 -m atari_py.import_roms ROMS
 # RUN cd .. && rm -rf roms
+
+RUN mkdir /sldp
+COPY ../sliding-puzzle-env /sldp
+RUN pip3 install -e /sldp
 
 ARG GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
