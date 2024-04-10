@@ -156,7 +156,7 @@ sldp_large:
   batch_length: 64
   train_ratio: 512  # (1:2)
 
-  steps: 1e5 # 100.000
+  steps: 1e6 # 100.000
   parallel: True
   action_repeat: 1
   video_pred_log: False
@@ -188,7 +188,7 @@ sldp_large_image:
   batch_length: 64
   train_ratio: 512  # (1:2)
 
-  steps: 1e5 # 100.000
+  steps: 1e6 # 100.000
   parallel: True
   action_repeat: 1
   video_pred_log: True
